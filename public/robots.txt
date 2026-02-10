@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ugis.upbir.ch/sitemap-index.xml
