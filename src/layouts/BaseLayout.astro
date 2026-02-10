@@ -1,0 +1,22 @@
+---
+import "../assets/styles/global.css";
+
+interface Props {
+  title: string;
+  hemisphere?: "mind" | "heart";
+}
+
+const { title, hemisphere = "mind" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+  </head>
+  <body class={`hemisphere-${hemisphere}`}>
+    <slot />
+  </body>
+</html>
