@@ -221,9 +221,12 @@ const { hemisphere = "mind", splitBg = false } = Astro.props;
     if (heartMobileCanvas) renderHeart(heartMobileCanvas);
   }
 
-  // Debounced resize
+  // Debounced resize — only on width change (skip mobile address bar show/hide)
   var resizeTimer;
+  var lastWidth = window.innerWidth;
   function onResize() {
+    if (window.innerWidth === lastWidth) return;
+    lastWidth = window.innerWidth;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(renderAll, 200);
   }
