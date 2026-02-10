@@ -1,0 +1,149 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const jobs = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+
+function formatDate(date: string): string {
+  const [year, month] = date.split("-");
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${months[parseInt(month) - 1]} ${year}`;
+}
+---
+
+<BaseLayout title="CV — ugis.upbir.ch" hemisphere="mind">
+  <main class="flex-1 px-6 py-16 max-w-3xl mx-auto w-full">
+    {/* Professional Summary */}
+    <section class="mb-14">
+      <h1 class="text-3xl font-heading font-bold text-accent mb-4">CV</h1>
+      <div class="text-text-muted leading-relaxed space-y-3">
+        <p>
+          Developer with 12+ years building web applications. Currently focused on shipping platforms with TypeScript and Nuxt.
+        </p>
+        <p>
+          Optimize how development teams use LLM-assisted workflows — particularly how to use Claude Code for complex migrations and reduce token overhead when working with framework documentation.
+        </p>
+        <p>
+          Built products from scratch in health tech, ERP, shipping — typically working close to founders and stakeholders to translate business needs into technical solutions. Worked across stacks: .NET → Clojure → modern TypeScript.
+        </p>
+      </div>
+    </section>
+
+    {/* Work Timeline */}
+    <section class="mb-14">
+      <h2 class="text-xl font-heading font-bold text-accent mb-8">Work Experience</h2>
+      <div class="space-y-10">
+        {jobs.map(async (job) => {
+          const { Content } = await job.render();
+          const dateRange = job.data.endDate
+            ? `${formatDate(job.data.startDate)} — ${formatDate(job.data.endDate)}`
+            : `${formatDate(job.data.startDate)} — Present`;
+          return (
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="sm:w-40 shrink-0">
+                <span class="text-sm text-text-muted font-body">{dateRange}</span>
+              </div>
+              <div class="flex-1 border-l border-surface pl-6">
+                <h3 class="font-heading text-base text-text font-bold">{job.data.title}</h3>
+                <p class="text-accent text-sm mb-1">{job.data.company}</p>
+                <p class="text-text-muted text-xs mb-3">{job.data.location}</p>
+                <div class="text-sm text-text-muted leading-relaxed prose-mind">
+                  <Content />
+                </div>
+                <div class="flex flex-wrap gap-1.5 mt-3">
+                  {job.data.keywords.map((kw: string) => (
+                    <span class="text-xs px-2 py-0.5 rounded bg-surface text-accent">{kw}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    {/* Education */}
+    <section class="mb-14">
+      <h2 class="text-xl font-heading font-bold text-accent mb-8">Education</h2>
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="sm:w-40 shrink-0">
+            <span class="text-sm text-text-muted font-body">2012 — 2014</span>
+          </div>
+          <div class="flex-1 border-l border-surface pl-6">
+            <h3 class="font-heading text-base text-text font-bold">Bachelor's Degree — Computer Science</h3>
+            <p class="text-accent text-sm">University of Latvia</p>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="sm:w-40 shrink-0">
+            <span class="text-sm text-text-muted font-body">2010 — 2012</span>
+          </div>
+          <div class="flex-1 border-l border-surface pl-6">
+            <h3 class="font-heading text-base text-text font-bold">Professional Programme — Computer Programming</h3>
+            <p class="text-accent text-sm">University of Latvia</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Languages */}
+    <section class="mb-14">
+      <h2 class="text-xl font-heading font-bold text-accent mb-6">Languages</h2>
+      <div class="flex flex-wrap gap-4">
+        <div class="rounded-lg border border-surface bg-surface/50 px-4 py-3">
+          <span class="text-sm text-text font-bold">Latvian</span>
+          <span class="text-xs text-text-muted ml-2">Native</span>
+        </div>
+        <div class="rounded-lg border border-surface bg-surface/50 px-4 py-3">
+          <span class="text-sm text-text font-bold">English</span>
+          <span class="text-xs text-text-muted ml-2">C1–C2</span>
+        </div>
+        <div class="rounded-lg border border-surface bg-surface/50 px-4 py-3">
+          <span class="text-sm text-text font-bold">Russian</span>
+          <span class="text-xs text-text-muted ml-2">Basic</span>
+        </div>
+      </div>
+    </section>
+
+    {/* Certifications */}
+    <section class="mb-14">
+      <h2 class="text-xl font-heading font-bold text-accent mb-6">Certifications</h2>
+      <div class="space-y-3">
+        <div class="rounded-lg border border-surface bg-surface/50 px-4 py-3">
+          <span class="text-sm text-text font-bold">Deep Learning Specialization</span>
+          <span class="text-xs text-text-muted block mt-0.5">Coursera / deeplearning.ai — January 2019</span>
+        </div>
+        <div class="rounded-lg border border-surface bg-surface/50 px-4 py-3">
+          <span class="text-sm text-text font-bold">Scrum Fundamentals Certified</span>
+          <span class="text-xs text-text-muted block mt-0.5">VMEdu — February 2016</span>
+        </div>
+      </div>
+    </section>
+
+    {/* Awards */}
+    <section class="mb-14">
+      <h2 class="text-xl font-heading font-bold text-accent mb-6">Awards</h2>
+      <div class="space-y-3">
+        <div class="rounded-lg border border-surface bg-surface/50 px-4 py-3">
+          <span class="text-sm text-text font-bold">3rd place — Open Data Hackathon 2018</span>
+          <span class="text-xs text-text-muted block mt-0.5">piesien.lv — platform to add and vote for new bicycle parking spots</span>
+        </div>
+        <div class="rounded-lg border border-surface bg-surface/50 px-4 py-3">
+          <span class="text-sm text-text font-bold">Microsoft prize — Garage48 Ventspils</span>
+          <span class="text-xs text-text-muted block mt-0.5">May 2013 — Team Visand</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .prose-mind :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .prose-mind :global(li) {
+    margin-bottom: 0.25rem;
+  }
+</style>

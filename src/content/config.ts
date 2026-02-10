@@ -1,4 +1,16 @@
-import { defineCollection } from "astro:content";
+import { defineCollection, z } from "astro:content";
 
-// Collections will be defined here as the site grows.
-export const collections = {};
+const work = defineCollection({
+  type: "content",
+  schema: z.object({
+    company: z.string(),
+    title: z.string(),
+    startDate: z.string(),
+    endDate: z.string().optional(),
+    location: z.string(),
+    keywords: z.array(z.string()),
+    order: z.number(),
+  }),
+});
+
+export const collections = { work };

@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Infrastructure — ugis.upbir.ch" hemisphere="mind">
+  <main class="flex-1 px-6 py-16 max-w-3xl mx-auto w-full">
+    <section class="mb-12">
+      <h1 class="text-3xl font-heading font-bold text-accent mb-2">Infrastructure</h1>
+      <p class="text-text-muted text-lg">Own your data, run your services.</p>
+    </section>
+
+    <div class="text-sm text-text-muted leading-relaxed space-y-5">
+      <p>
+        I run a homelab because I'd rather own the things I depend on. Media, photos, passwords, recipes, budgeting, books — it all lives on hardware I control, accessible through Cloudflare tunnels on <code class="text-accent">*.upbir.ch</code> subdomains.
+      </p>
+
+      <p>
+        The backbone is a Proxmox hypervisor, a Synology NAS for storage, and a couple of Portainer instances orchestrating containers. DNS filtering, segmented networks, automated backups. Nothing fancy — just reliable.
+      </p>
+
+      <p>
+        There's also a remote site out in the countryside — a ranch property with Home Assistant running greenhouse automation (temperature, humidity, watering) and security cameras. Connected over LTE, managed remotely.
+      </p>
+
+      <p>
+        The general philosophy: Docker Compose for everything, Cloudflare for access, Pi-hole for filtering, RAID + automated backups for peace of mind. If a service matters to daily life, it shouldn't depend on someone else's business model.
+      </p>
+    </div>
+  </main>
+</BaseLayout>
