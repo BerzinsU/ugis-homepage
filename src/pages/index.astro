@@ -1,66 +1,125 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import HemisphereSplit from "../components/layout/HemisphereSplit.astro";
-import Card from "../components/shared/Card.astro";
 ---
 
-<BaseLayout title="ugis.upbir.ch" description="Personal homepage of Ugis Berzins — software engineer from Riga. Tech, culture, and everything in between.">
-  <main class="flex-1">
-    {/* Intro section */}
-    <section class="text-center px-6 py-16 max-w-2xl mx-auto">
-      <h1 class="text-4xl font-heading font-bold text-accent mb-3">
-        Ugis Berzins
+<BaseLayout title="ugis.upbir.ch" description="Personal homepage of Uģis Bērziņš — software engineer from Riga." splitBg>
+  <main class="flex-1 landing">
+    {/* Intro — centered, spanning both sides */}
+    <section class="relative z-10 text-center px-6 py-16 max-w-2xl mx-auto">
+      <h1 class="text-4xl font-bold text-accent mb-3">
+        <span class="font-heading">Uģis</span> <span class="font-heart text-[42px]">Bērziņš</span>
       </h1>
       <p class="text-text-muted text-lg">
-        Software engineer from Riga. Building systems by day, exploring culture by night.
+        <span class="font-body">Software engineer from Riga.</span> <span class="font-heart">And not just that.</span>
       </p>
     </section>
 
-    {/* Hemisphere split */}
-    <HemisphereSplit>
-      <div slot="mind">
-        <h2 class="font-heading text-2xl text-accent mb-1">Mind</h2>
-        <p class="text-text-muted text-sm mb-6">Logic, systems, craft</p>
-        <div class="flex flex-col gap-4">
-          <Card
-            title="CV"
-            description="Work history and professional experience."
-            href="/mind/cv"
-          />
-          <Card
-            title="Tech Stack"
-            description="Languages, frameworks, and tools I work with."
-            href="/mind/stack"
-          />
-          <Card
-            title="Infrastructure"
-            description="Homelab architecture and self-hosted services."
-            href="/mind/infrastructure"
-          />
+    {/* Content columns */}
+    <div class="landing__cols relative z-10">
+      <div class="landing__col hemisphere-mind">
+        <div class="landing__col-inner">
+          <div class="space-y-4 text-sm lg:text-base text-text-muted leading-relaxed">
+            <p>
+              14+ years building web applications. Currently working on shipping platforms with TypeScript and Nuxt — close to the business side, turning requirements into working software.
+            </p>
+
+            <p>
+              Vue is my framework of choice — pragmatic, stays out of the way, and the ecosystem around Nuxt and the composition API just makes sense. Before that it was Clojure, and before that .NET. The stack changes; the way I pick apart problems doesn't.
+            </p>
+
+            <p>
+              I run a homelab — Proxmox, Docker Compose, Cloudflare tunnels, automated backups. I'd rather own the stuff I depend on daily than hope someone else keeps their service running.
+            </p>
+
+            <p>
+              I do Advent of Code each December — good fun and a nice break from production code.
+            </p>
+          </div>
+
+          <a href="/cv" class="inline-block text-sm text-accent hover:underline mt-8">
+            Full work history &rarr;
+          </a>
         </div>
       </div>
 
-      <div slot="heart">
-        <h2 class="font-heading text-2xl text-accent mb-1">Heart</h2>
-        <p class="text-text-muted text-sm mb-6">Creativity, culture, play</p>
-        <div class="flex flex-col gap-4">
-          <Card
-            title="Reading"
-            description="Sci-fi, stoicism, and the occasional rabbit hole."
-            href="/heart/reading"
-          />
-          <Card
-            title="Music"
-            description="Vinyl, film scores, and the warmth of analogue."
-            href="/heart/music"
-          />
-          <Card
-            title="Games"
-            description="Board games, game design, and building Hexagers."
-            href="/heart/games"
-          />
+      <div class="landing__col hemisphere-heart">
+        <div class="landing__col-inner">
+          <div class="space-y-4 text-sm lg:text-base text-text-muted leading-relaxed">
+            <p>
+              I read a lot of sci-fi and fantasy — Tchaikovsky, Sapkowski, Weir. Some stoic philosophy and the occasional book on game design.
+            </p>
+
+            <p>
+              I have a small vinyl shelf — film scores, classic albums, the odd local pressing. I also shoot film. There's something about analogue formats that I keep coming back to.
+            </p>
+
+            <p>
+              I play a lot of games — PC mostly, but board games too sometimes. I like thinking about why some games work and others don't. That's slowly turning into actually making one — prototyping a hex-grid town builder in Bevy/Rust after tinkering with Blender and UE5 first.
+            </p>
+          </div>
+
+          <a href="/about" class="inline-block text-sm text-accent hover:underline mt-8">
+            More about me &rarr;
+          </a>
         </div>
       </div>
-    </HemisphereSplit>
+    </div>
   </main>
 </BaseLayout>
+
+<style>
+  .font-heart {
+    font-family: "Source Serif 4", serif;
+  }
+
+  .landing__cols {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .landing__col-inner {
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 0 2rem 3rem;
+  }
+
+  /* Mobile: stacked, heart column fills remaining space */
+  @media (max-width: 1023px) {
+    .landing {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .landing__cols {
+      flex: 1;
+    }
+
+    .landing__col.hemisphere-heart {
+      flex: 1;
+      background-color: var(--bg);
+    }
+  }
+
+  /* Desktop: side-by-side */
+  @media (min-width: 1024px) {
+    .landing__cols {
+      flex-direction: row;
+    }
+
+    .landing__col {
+      flex: 1;
+    }
+
+    .landing__col:first-child .landing__col-inner {
+      margin-left: auto;
+      margin-right: 2rem;
+      padding-top: 1rem;
+    }
+
+    .landing__col:last-child .landing__col-inner {
+      margin-right: auto;
+      margin-left: 2rem;
+      padding-top: 1rem;
+    }
+  }
+</style>

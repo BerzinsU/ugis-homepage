@@ -2,15 +2,17 @@
 import "../assets/styles/global.css";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
+import FractalBackground from "../components/backgrounds/FractalBackground.astro";
 import { ViewTransitions } from "astro:transitions";
 
 interface Props {
   title: string;
   description?: string;
   hemisphere?: "mind" | "heart";
+  splitBg?: boolean;
 }
 
-const { title, description = "Personal homepage of Ugis Berzins — software engineer from Riga.", hemisphere = "mind" } = Astro.props;
+const { title, description = "Personal homepage of Ugis Berzins — software engineer from Riga.", hemisphere = "mind", splitBg = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -33,8 +35,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <ViewTransitions />
+    <script is:inline>
+      (function() {
+        function getTheme() {
+          var stored = localStorage.getItem("theme");
+          if (stored) return stored;
+          return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", getTheme());
+
+        // Preserve theme across Astro view transitions
+        document.addEventListener("astro:before-swap", function(e) {
+          e.newDocument.documentElement.setAttribute("data-theme", getTheme());
+        });
+      })();
+    </script>
   </head>
-  <body class={`hemisphere-${hemisphere} min-h-screen flex flex-col`}>
+  <body class:list={[`hemisphere-${hemisphere}`, 'min-h-screen flex flex-col', splitBg && 'split-bg']}>
+    {splitBg && <div class="split-bg__panel hemisphere-heart" aria-hidden="true"></div>}
+    <FractalBackground hemisphere={hemisphere} splitBg={splitBg} />
     <Header />
     <slot />
     <Footer />

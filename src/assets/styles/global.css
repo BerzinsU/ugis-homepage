@@ -58,44 +58,55 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Source Sans 3";
-  src: url("/fonts/SourceSans3-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Source Sans 3";
-  src: url("/fonts/SourceSans3-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ── Hemisphere tokens ── */
 
 .hemisphere-mind {
-  --bg: #0a0e14;
-  --surface: #131922;
+  --bg: #111720;
+  --surface: #1a2332;
   --text: #e0e6ed;
-  --text-muted: #8b9bb4;
+  --text-muted: #94a3b8;
   --accent: #4dc9f6;
   --accent-secondary: #3d8b6e;
   --font-heading: "JetBrains Mono", monospace;
   --font-body: "Inter", sans-serif;
+  font-family: var(--font-body);
+  color: var(--text);
 }
 
 .hemisphere-heart {
-  --bg: #140f0a;
-  --surface: #1e1610;
+  --bg: #1c1510;
+  --surface: #2c2018;
   --text: #ede0d4;
-  --text-muted: #b49a7e;
-  --accent: #d4956a;
-  --accent-secondary: #a67c52;
+  --text-muted: #c0a68a;
+  --accent: #c8895e;
+  --accent-secondary: #9a7148;
   --font-heading: "Source Serif 4", serif;
-  --font-body: "Source Sans 3", sans-serif;
+  --font-body: "Source Serif 4", serif;
+  font-family: var(--font-body);
+  font-size-adjust: 0.52;
+  color: var(--text);
+}
+
+/* ── Light theme variants ── */
+
+html[data-theme="light"] .hemisphere-mind,
+html[data-theme="light"].hemisphere-mind {
+  --bg: #e4eaf0;
+  --surface: #cdd6e0;
+  --text: #1a202c;
+  --text-muted: #3e4e63;
+  --accent: #0c6680;
+  --accent-secondary: #246b4a;
+}
+
+html[data-theme="light"] .hemisphere-heart,
+html[data-theme="light"].hemisphere-heart {
+  --bg: #ede4d8;
+  --surface: #ddd0c0;
+  --text: #292017;
+  --text-muted: #5e4a36;
+  --accent: #9e6535;
+  --accent-secondary: #7a5528;
 }
 
 /* ── Tailwind theme integration ── */
@@ -126,4 +137,49 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
+}
+
+/* ── Split background (landing page) ── */
+
+.split-bg__panel {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .split-bg > footer {
+    --bg: #1c1510;
+    --surface: #2c2018;
+    --text: #ede0d4;
+    --text-muted: #b49a7e;
+    --accent: #d4956a;
+    background-color: var(--bg);
+    color: var(--text);
+    border-color: var(--surface);
+  }
+
+  html[data-theme="light"] .split-bg > footer {
+    --bg: #ede4d8;
+    --surface: #ddd0c0;
+    --text: #292017;
+    --text-muted: #5e4a36;
+    --accent: #9e6535;
+  }
+}
+
+@media (min-width: 1024px) {
+  .split-bg__panel {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-color: var(--bg);
+    clip-path: polygon(calc(50% + 1.5rem) 0, 100% 0, 100% 100%, calc(50% - 1.5rem) 100%);
+  }
+
+  .split-bg > header,
+  .split-bg > main,
+  .split-bg > footer {
+    position: relative;
+    z-index: 1;
+  }
 }

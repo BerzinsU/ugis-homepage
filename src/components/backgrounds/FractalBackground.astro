@@ -1,0 +1,234 @@
+---
+interface Props {
+  hemisphere?: "mind" | "heart";
+  splitBg?: boolean;
+}
+
+const { hemisphere = "mind", splitBg = false } = Astro.props;
+---
+
+{splitBg ? (
+  <canvas id="fractal-mind" class="fractal-canvas fractal-canvas--mind" aria-hidden="true"></canvas>
+  <canvas id="fractal-heart" class="fractal-canvas fractal-canvas--heart" aria-hidden="true"></canvas>
+) : (
+  <canvas id={`fractal-${hemisphere}`} class={`fractal-canvas fractal-canvas--single-${hemisphere}`} aria-hidden="true"></canvas>
+)}
+
+<style>
+  .fractal-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Single-page mind: visible on left, fades toward center/right */
+  .fractal-canvas--single-mind {
+    mask-image: linear-gradient(to right, black, transparent 55%);
+    -webkit-mask-image: linear-gradient(to right, black, transparent 55%);
+  }
+
+  /* Single-page heart: visible on right, fades toward center/left */
+  .fractal-canvas--single-heart {
+    mask-image: linear-gradient(to left, black, transparent 55%);
+    -webkit-mask-image: linear-gradient(to left, black, transparent 55%);
+  }
+
+  /* Split layout: mind on left, fades toward center */
+  .fractal-canvas--mind {
+    clip-path: polygon(0 0, calc(50% + 1.5rem) 0, calc(50% - 1.5rem) 100%, 0 100%);
+    mask-image: linear-gradient(to right, black, transparent 55%);
+    -webkit-mask-image: linear-gradient(to right, black, transparent 55%);
+  }
+
+  /* Split layout: heart on right, fades toward center */
+  .fractal-canvas--heart {
+    clip-path: polygon(calc(50% + 1.5rem) 0, 100% 0, 100% 100%, calc(50% - 1.5rem) 100%);
+    mask-image: linear-gradient(to left, black, transparent 55%);
+    -webkit-mask-image: linear-gradient(to left, black, transparent 55%);
+  }
+
+  @media (max-width: 1023px) {
+    .fractal-canvas--heart {
+      display: none;
+    }
+
+    .fractal-canvas--mind {
+      clip-path: none;
+      mask-image: linear-gradient(to right, black, transparent 55%);
+      -webkit-mask-image: linear-gradient(to right, black, transparent 55%);
+    }
+  }
+</style>
+
+<script is:inline>
+(function () {
+  function getAccentColor(element) {
+    var style = getComputedStyle(element);
+    return style.getPropertyValue("--accent").trim();
+  }
+
+  // ── Recursive Hexagon Fractal (Mind) ──
+
+  function drawHexagon(ctx, cx, cy, radius, angle) {
+    ctx.beginPath();
+    for (var i = 0; i < 6; i++) {
+      var a = angle + (Math.PI / 3) * i;
+      var x = cx + radius * Math.cos(a);
+      var y = cy + radius * Math.sin(a);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  function drawRecursiveHexagons(ctx, cx, cy, radius, depth, angle) {
+    if (depth <= 0 || radius < 4) return;
+    drawHexagon(ctx, cx, cy, radius, angle);
+    if (depth <= 1) return;
+
+    var childRadius = radius * 0.38;
+    for (var i = 0; i < 6; i++) {
+      var a = angle + (Math.PI / 3) * i;
+      var nx = cx + radius * 0.62 * Math.cos(a);
+      var ny = cy + radius * 0.62 * Math.sin(a);
+      drawRecursiveHexagons(ctx, nx, ny, childRadius, depth - 1, angle + Math.PI / 6);
+    }
+  }
+
+  function renderMind(canvas) {
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    var dpr = window.devicePixelRatio || 1;
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    var mindEl = document.querySelector(".hemisphere-mind") || document.body;
+    var accent = getAccentColor(mindEl) || "#4dc9f6";
+
+    ctx.strokeStyle = accent;
+    ctx.globalAlpha = 0.07;
+    ctx.lineWidth = 1;
+
+    // Large fractal centered on viewport
+    var diag = Math.sqrt(w * w + h * h);
+    var baseRadius = diag * 0.55;
+    drawRecursiveHexagons(ctx, w / 2, h / 2, baseRadius, 5, 0);
+  }
+
+  // ── Curved Tree Fractal (Heart) ──
+
+  function drawCurvedBranch(ctx, x, y, length, angle, depth, curve) {
+    if (depth <= 0 || length < 5) return;
+
+    var ex = x + length * Math.cos(angle);
+    var ey = y + length * Math.sin(angle);
+
+    var mx = (x + ex) / 2 + curve * length * 0.3 * Math.cos(angle - Math.PI / 2);
+    var my = (y + ey) / 2 + curve * length * 0.3 * Math.sin(angle - Math.PI / 2);
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(mx, my, ex, ey);
+    ctx.stroke();
+
+    var shrink = 0.65;
+    var spread = 0.5;
+    var childLen = length * shrink;
+
+    drawCurvedBranch(ctx, ex, ey, childLen, angle - spread, depth - 1, -1);
+    drawCurvedBranch(ctx, ex, ey, childLen, angle + spread, depth - 1, 1);
+  }
+
+  function renderHeart(canvas) {
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    var dpr = window.devicePixelRatio || 1;
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    var heartEl = document.querySelector(".hemisphere-heart") || document.body;
+    var accent = getAccentColor(heartEl) || "#c8895e";
+
+    ctx.strokeStyle = accent;
+    ctx.globalAlpha = 0.12;
+    ctx.lineWidth = 1;
+
+    var trees = [
+      { x: w * 0.5,  y: h * 0.95, len: h * 0.6,  angle: -Math.PI / 2,       curve: 1 },
+      { x: w * 0.12, y: h * 0.85, len: h * 0.5,  angle: -Math.PI / 2 + 0.3, curve: -1 },
+      { x: w * 0.88, y: h * 0.9,  len: h * 0.52, angle: -Math.PI / 2 - 0.2, curve: 1 },
+      { x: w * 0.0,  y: h * 0.45, len: h * 0.44, angle: 0.2,                curve: 1 },
+      { x: w * 1.0,  y: h * 0.45, len: h * 0.44, angle: Math.PI - 0.2,      curve: -1 },
+      { x: w * 0.35, y: h * 0.0,  len: h * 0.4,  angle: Math.PI / 2 + 0.2,  curve: -1 },
+      { x: w * 0.7,  y: h * 0.0,  len: h * 0.4,  angle: Math.PI / 2 - 0.3,  curve: 1 },
+    ];
+
+    for (var i = 0; i < trees.length; i++) {
+      var t = trees[i];
+      drawCurvedBranch(ctx, t.x, t.y, t.len, t.angle, 11, t.curve);
+    }
+  }
+
+  // ── Orchestration ──
+
+  function renderAll() {
+    var mindCanvas = document.getElementById("fractal-mind");
+    var heartCanvas = document.getElementById("fractal-heart");
+
+    if (mindCanvas) renderMind(mindCanvas);
+    if (heartCanvas) renderHeart(heartCanvas);
+  }
+
+  // Debounced resize
+  var resizeTimer;
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(renderAll, 200);
+  }
+
+  // Theme changes via MutationObserver
+  function observeTheme() {
+    var observer = new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        if (mutations[i].attributeName === "data-theme") {
+          renderAll();
+          return;
+        }
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true });
+  }
+
+  function init() {
+    renderAll();
+    window.addEventListener("resize", onResize);
+    observeTheme();
+  }
+
+  // Run on initial load
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  // Re-initialize after Astro view transitions
+  document.addEventListener("astro:after-swap", function () {
+    renderAll();
+  });
+})();
+</script>

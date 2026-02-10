@@ -1,7 +1,8 @@
 ---
+import ThemeToggle from "./ThemeToggle.astro";
+
 const navLinks = [
-  { label: "Mind", href: "/mind" },
-  { label: "Heart", href: "/heart" },
+  { label: "CV", href: "/cv" },
   { label: "About", href: "/about" },
 ];
 ---
@@ -10,7 +11,7 @@ const navLinks = [
   <a href="/" class="font-heading text-lg text-accent hover:text-text transition-colors">
     ugis.upbir.ch
   </a>
-  <nav class="flex gap-6">
+  <nav class="flex items-center gap-6">
     {navLinks.map((link) => (
       <a
         href={link.href}
@@ -19,5 +20,6 @@ const navLinks = [
         {link.label}
       </a>
     ))}
+    <ThemeToggle />
   </nav>
 </header>
