@@ -1,12 +1,66 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HemisphereSplit from "../components/layout/HemisphereSplit.astro";
+import Card from "../components/shared/Card.astro";
 ---
 
 <BaseLayout title="ugis.upbir.ch">
-  <main class="min-h-screen flex items-center justify-center">
-    <div class="text-center">
-      <h1 class="text-4xl font-bold text-accent mb-4">ugis.upbir.ch</h1>
-      <p class="text-text-muted">Under construction.</p>
-    </div>
+  <main class="flex-1">
+    {/* Intro section */}
+    <section class="text-center px-6 py-16 max-w-2xl mx-auto">
+      <h1 class="text-4xl font-heading font-bold text-accent mb-3">
+        Ugis Berzins
+      </h1>
+      <p class="text-text-muted text-lg">
+        Software engineer from Riga. Building systems by day, exploring culture by night.
+      </p>
+    </section>
+
+    {/* Hemisphere split */}
+    <HemisphereSplit>
+      <div slot="mind">
+        <h2 class="font-heading text-2xl text-accent mb-1">Mind</h2>
+        <p class="text-text-muted text-sm mb-6">Logic, systems, craft</p>
+        <div class="flex flex-col gap-4">
+          <Card
+            title="CV"
+            description="Work history and professional experience."
+            href="/mind/cv"
+          />
+          <Card
+            title="Tech Stack"
+            description="Languages, frameworks, and tools I work with."
+            href="/mind/stack"
+          />
+          <Card
+            title="Infrastructure"
+            description="Homelab architecture and self-hosted services."
+            href="/mind/infrastructure"
+          />
+        </div>
+      </div>
+
+      <div slot="heart">
+        <h2 class="font-heading text-2xl text-accent mb-1">Heart</h2>
+        <p class="text-text-muted text-sm mb-6">Creativity, culture, play</p>
+        <div class="flex flex-col gap-4">
+          <Card
+            title="Reading"
+            description="Book collection and reading notes."
+            href="/heart/reading"
+          />
+          <Card
+            title="Music"
+            description="Vinyl collection and listening habits."
+            href="/heart/music"
+          />
+          <Card
+            title="Games"
+            description="Board games, game design, and Hexagers."
+            href="/heart/games"
+          />
+        </div>
+      </div>
+    </HemisphereSplit>
   </main>
 </BaseLayout>
